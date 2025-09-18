@@ -1,0 +1,3 @@
+﻿DisplayName,UPN,Alias,GivenName,Surname,JobTitle,Department,UsageLocation,Groups,Licenses
+Alice A,alice@contoso.com,alicea,Alice,A,Analyst,Finance,PT,"Finance;AllStaff","SPE_E5;POWERAUTOMATE_FREE"
+Bob B,bob@contoso.com,,Bob,B,IT Tech,IT,PT,"IT;AllStaff","O365_BUSINESS_ESSENTIALS"
