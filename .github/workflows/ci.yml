@@ -1,0 +1,18 @@
+﻿name: CI
+on: [push, pull_request]
+jobs:
+  ps-tests:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pester
+        shell: pwsh
+        run: Install-Module Pester -Force -Scope CurrentUser
+      - name: Run Pester (SupportKit)
+        shell: pwsh
+        run: pwsh -NoProfile -Command "Invoke-Pester -Path ./supportkit/tests -CI"
+  py-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "No Python package yet; placeholder passing step."
