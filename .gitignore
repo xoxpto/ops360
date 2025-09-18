@@ -1,0 +1,21 @@
+﻿# Windows
+Thumbs.db
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Test/Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# PowerShell
+*.pshistory
+
+# Editors
+.vscode/
+.idea/
