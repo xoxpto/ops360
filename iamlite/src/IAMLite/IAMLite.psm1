@@ -1,1 +1,3 @@
-﻿Get-ChildItem $PSScriptRoot\Public\*.ps1 | ForEach-Object { . $_ }
+﻿# IAMLite module
+. "$PSScriptRoot\Public\New-UserFromCsv.ps1"
+Export-ModuleMember -Function New-UserFromCsv

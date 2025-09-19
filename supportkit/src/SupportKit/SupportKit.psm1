@@ -1,1 +1,3 @@
-﻿Get-ChildItem $PSScriptRoot\Public\*.ps1 | ForEach-Object { . $_ }
+﻿# SupportKit module
+. "$PSScriptRoot\Public\Test-Workstation.ps1"
+Export-ModuleMember -Function Test-Workstation

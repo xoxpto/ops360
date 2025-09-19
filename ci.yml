@@ -1,0 +1,27 @@
+﻿name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-powershell:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Pester
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck
+
+      - name: Testes IAMLite
+        shell: pwsh
+        working-directory: ./iamlite/tests
+        run: Invoke-Pester -CI -Output Detailed
+
+      - name: Testes SupportKit
+        shell: pwsh
+        working-directory: ./supportkit/tests
+        run: Invoke-Pester -CI -Output Detailed
