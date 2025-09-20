@@ -1,0 +1,59 @@
+﻿name: release
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write   # necessário para criar/editar Releases com o GITHUB_TOKEN
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # opcional em Windows; podes remover se quiseres
+      - name: Setup PowerShell
+        uses: PowerShell/PowerShell-For-GitHub-Actions@v1
+
+      - name: Install Pester
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck
+
+      - name: Test iamlite
+        shell: pwsh
+        working-directory: ./iamlite/tests
+        run: Invoke-Pester -CI
+
+      - name: Test supportkit
+        shell: pwsh
+        working-directory: ./supportkit/tests
+        run: Invoke-Pester -CI
+
+      - name: Package modules
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory dist -Force | Out-Null
+          foreach($m in 'iamlite','supportkit'){
+            $src = Join-Path $m 'src'
+            Get-ChildItem $src -Directory | ForEach-Object {
+              $name = $_.Name  # IAMLite / SupportKit
+              $out = "dist/$name.zip"
+              if (Test-Path $out) { Remove-Item $out -Force }
+              Compress-Archive -Path "$src/$name/*" -DestinationPath $out -Force
+            }
+          }
+          Get-ChildItem dist
+
+      - name: Upload artifacts (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops360-modules-${{ github.ref_name }}
+          path: dist/*.zip
+
+      - name: Attach artifacts to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
