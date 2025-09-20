@@ -1,6 +1,6 @@
 ﻿@{
     RootModule        = 'IAMLite.psm1'
-    ModuleVersion     = '0.1.0'
+$10.1.1'
     GUID              = '45aa3878-b28a-44ae-8978-02aedd23aa2c'
     Author            = 'André Abrantes'
     CompanyName       = 'Warranty Nest'
@@ -12,3 +12,4 @@
     AliasesToExport   = @()
     PrivateData       = @{}
 }
+

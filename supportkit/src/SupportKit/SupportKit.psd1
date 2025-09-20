@@ -1,6 +1,6 @@
 ﻿@{
     RootModule        = 'SupportKit.psm1'
-    ModuleVersion     = '0.1.0'
+$10.1.1'
     GUID              = 'ffa96903-8f81-45b6-994f-6772317d1619'
     Author            = 'André Abrantes'
     CompanyName       = 'Warranty Nest'
@@ -11,3 +11,4 @@
     AliasesToExport   = @()
     PrivateData       = @{}
 }
+
