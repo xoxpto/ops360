@@ -4,36 +4,31 @@ on:
     tags: ['v*']
 
 permissions:
-  contents: write   # necessário para criar/editar Releases com o GITHUB_TOKEN
+  contents: write
 
 jobs:
   build-and-release:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
     steps:
       - uses: actions/checkout@v4
 
-      # opcional em Windows; podes remover se quiseres
-      - name: Setup PowerShell
-        uses: PowerShell/PowerShell-For-GitHub-Actions@v1
-
       - name: Install Pester
-        shell: pwsh
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
           Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck
 
       - name: Test iamlite
-        shell: pwsh
         working-directory: ./iamlite/tests
         run: Invoke-Pester -CI
 
       - name: Test supportkit
-        shell: pwsh
         working-directory: ./supportkit/tests
         run: Invoke-Pester -CI
 
       - name: Package modules
-        shell: pwsh
         run: |
           New-Item -ItemType Directory dist -Force | Out-Null
           foreach($m in 'iamlite','supportkit'){
@@ -47,7 +42,7 @@ jobs:
           }
           Get-ChildItem dist
 
-      - name: Upload artifacts (optional)
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ops360-modules-${{ github.ref_name }}
