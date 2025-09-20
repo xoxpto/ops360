@@ -1,7 +1,7 @@
 ﻿@{
     RootModule        = 'IAMLite.psm1'
-$10.1.1'
-    GUID              = '45aa3878-b28a-44ae-8978-02aedd23aa2c'
+    ModuleVersion     = '0.1.0'
+    GUID              = '08d19dea-dc70-4808-aab5-45c637ba19da'
     Author            = 'André Abrantes'
     CompanyName       = 'Warranty Nest'
     Copyright         = '(c) 2025 André Abrantes'
