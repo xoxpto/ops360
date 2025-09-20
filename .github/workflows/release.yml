@@ -1,36 +1,40 @@
 ﻿name: release
+
 on:
   push:
-    tags: ['v*']
+    tags:
+      - 'v*'
 
 permissions:
-  contents: write
+  contents: write  # necessário para criar/editar Releases com o GITHUB_TOKEN
 
 jobs:
   build-and-release:
     runs-on: windows-latest
-    defaults:
-      run:
-        shell: pwsh
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Pester
+        shell: pwsh
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
           Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck
 
       - name: Test iamlite
+        shell: pwsh
         working-directory: ./iamlite/tests
         run: Invoke-Pester -CI
 
       - name: Test supportkit
+        shell: pwsh
         working-directory: ./supportkit/tests
         run: Invoke-Pester -CI
 
       - name: Package modules
+        shell: pwsh
         run: |
-          New-Item -ItemType Directory dist -Force | Out-Null
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
           foreach($m in 'iamlite','supportkit'){
             $src = Join-Path $m 'src'
             Get-ChildItem $src -Directory | ForEach-Object {
@@ -40,7 +44,7 @@ jobs:
               Compress-Archive -Path "$src/$name/*" -DestinationPath $out -Force
             }
           }
-          Get-ChildItem dist
+          Get-ChildItem dist | Format-Table
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -48,7 +52,8 @@ jobs:
           name: ops360-modules-${{ github.ref_name }}
           path: dist/*.zip
 
-      - name: Attach artifacts to GitHub Release
+      - name: Create/Edit GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.zip
+          generate_release_notes: true
