@@ -1,16 +1,21 @@
-﻿BeforeAll {
-  $script:CsvPath = (Resolve-Path "$PSScriptRoot\users.sample.csv").Path
-  Import-Module (Resolve-Path "$PSScriptRoot\..\src\IAMLite\IAMLite.psd1") -Force
-}
-Describe "New-UserFromCsv" {
-  It "parses CSV and returns two users" {
-    $res = New-UserFromCsv -Path $script:CsvPath -Mock
-    $res.Count | Should -Be 2
-    $res[0].user.userPrincipalName | Should -Be "alice@contoso.com"
-    $res[1].user.mailNickname      | Should -Be "bob"
+﻿Describe "IAMLite" {
+  BeforeAll {
+    Import-Module "$PSScriptRoot\..\src\IAMLite\IAMLite.psd1" -Force
   }
+
+  It "parses CSV and returns two users" {
+    $users = New-UserFromCsv -Path "$PSScriptRoot\..\samples\users.sample.csv"
+    $users.Count | Should -Be 2
+    $users[0].SamAccountName | Should -Be "jdoe"
+    $users[1].SamAccountName | Should -Be "jsmith"
+  }
+
   It "emits valid JSON when -Json" {
-    $json = New-UserFromCsv -Path $script:CsvPath -Mock -Json
+    $json = New-UserFromCsv -Path "$PSScriptRoot\..\samples\users.sample.csv" -Json
     { $null = $json | ConvertFrom-Json } | Should -Not -Throw
+  }
+
+  It "honors -WhatIf (ShouldProcess)" {
+    { New-UserFromCsv -Path "$PSScriptRoot\..\samples\users.sample.csv" -WhatIf } | Should -Not -Throw
   }
 }
