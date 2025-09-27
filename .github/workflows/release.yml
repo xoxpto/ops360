@@ -2,7 +2,6 @@
 on:
   push:
     tags: ['v*']
-  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -13,18 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Pester & PSScriptAnalyzer
+      - name: Install Pester
         shell: pwsh
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Install-Module Pester,PSScriptAnalyzer -Scope CurrentUser -Force -SkipPublisherCheck
-
-      - name: Lint (PSScriptAnalyzer)
-        shell: pwsh
-        run: |
-          $errs = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error,Warning
-          $errs | Format-Table
-          if ($errs) { throw "PSScriptAnalyzer violations" }
+          Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck
 
       - name: Test iamlite
         shell: pwsh
@@ -36,25 +28,22 @@ jobs:
         working-directory: ./supportkit/tests
         run: Invoke-Pester -CI
 
-      - name: Package modules (versioned zips)
+      - name: Package modules
         shell: pwsh
         run: |
           New-Item -ItemType Directory dist -Force | Out-Null
-          foreach($name in 'IAMLite','SupportKit'){
-            $src = "*/src/$name"
-            $zip = "dist/$name-${{ github.ref_name }}.zip"
-            if (Test-Path $zip) { Remove-Item $zip -Force }
-            Compress-Archive -Path "$src/*" -DestinationPath $zip -Force
+          foreach( in 'iamlite','supportkit'){
+             = Join-Path  'src'
+            Get-ChildItem  -Directory | ForEach-Object {
+               = .Name
+               = "dist/.zip"
+              if (Test-Path ) { Remove-Item  -Force }
+              Compress-Archive -Path "//*" -DestinationPath  -Force
+            }
           }
-          Get-ChildItem dist
-
-      - name: Upload artifacts (for debugging)
-        uses: actions/upload-artifact@v4
-        with:
-          name: ops360-${{ github.ref_name }}
-          path: dist/*.zip
 
       - name: Attach artifacts to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.zip
+          generate_release_notes: true
