@@ -1,4 +1,23 @@
-﻿function Test-Workstation {
+﻿<#
+.SYNOPSIS
+Valida uma workstation local/remota (ping, uptime, disco e serviços críticos).
+
+.PARAMETER ComputerName
+Nome da máquina (por omissão, a máquina local).
+
+.PARAMETER MinFreePct
+Percentagem mínima de espaço livre no disco C:.
+
+.PARAMETER Json
+Devolve o resultado em JSON.
+
+.EXAMPLE
+Test-Workstation -Json | ConvertFrom-Json | Format-Table
+
+.EXAMPLE
+Test-Workstation -ComputerName PC001 -MinFreePct 20 -Verbose
+#>
+function Test-Workstation {
     [CmdletBinding()]
     param(
         [string]$ComputerName = $env:COMPUTERNAME,
@@ -92,3 +111,4 @@
         [pscustomobject]$result
     }
 }
+

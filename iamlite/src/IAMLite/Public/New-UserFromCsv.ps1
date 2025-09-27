@@ -1,4 +1,20 @@
-﻿function New-UserFromCsv {
+﻿<#
+.SYNOPSIS
+Cria objetos de utilizador a partir de um CSV (e demonstração de ShouldProcess).
+
+.PARAMETER Path
+Caminho para o CSV com colunas: Name, SamAccountName, GivenName, Surname, DisplayName, UserPrincipalName.
+
+.PARAMETER Json
+Devolve a lista em JSON.
+
+.EXAMPLE
+New-UserFromCsv -Path .\iamlite\samples\users.sample.csv -WhatIf
+
+.EXAMPLE
+New-UserFromCsv -Path .\users.csv -Json | ConvertFrom-Json
+#>
+function New-UserFromCsv {
     [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory, Position = 0)]
@@ -30,3 +46,4 @@
 
     if ($Json) { $out | ConvertTo-Json -Depth 4 } else { $out }
 }
+
