@@ -2,6 +2,11 @@
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag para lançar (ex: v0.2.3)'
+        required: true
 
 permissions:
   contents: write
@@ -11,6 +16,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install Pester
         shell: pwsh
@@ -32,13 +39,13 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory dist -Force | Out-Null
-          foreach( in 'iamlite','supportkit'){
-             = Join-Path  'src'
-            Get-ChildItem  -Directory | ForEach-Object {
-               = .Name
-               = "dist/.zip"
-              if (Test-Path ) { Remove-Item  -Force }
-              Compress-Archive -Path "//*" -DestinationPath  -Force
+          foreach($m in 'iamlite','supportkit'){
+            $src = Join-Path $m 'src'
+            Get-ChildItem $src -Directory | ForEach-Object {
+              $name = $_.Name
+              $out = "dist/$name.zip"
+              if (Test-Path $out) { Remove-Item $out -Force }
+              Compress-Archive -Path "$src/$name/*" -DestinationPath $out -Force
             }
           }
 
@@ -47,3 +54,4 @@ jobs:
         with:
           files: dist/*.zip
           generate_release_notes: true
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
