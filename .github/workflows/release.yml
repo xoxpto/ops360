@@ -1,25 +1,30 @@
 ﻿name: release
-
 on:
   push:
-    tags:
-      - 'v*'
+    tags: ['v*']
+  workflow_dispatch: {}
 
 permissions:
-  contents: write  # necessário para criar/editar Releases com o GITHUB_TOKEN
+  contents: write
 
 jobs:
   build-and-release:
     runs-on: windows-latest
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Pester
+      - name: Install Pester & PSScriptAnalyzer
         shell: pwsh
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck
+          Install-Module Pester,PSScriptAnalyzer -Scope CurrentUser -Force -SkipPublisherCheck
+
+      - name: Lint (PSScriptAnalyzer)
+        shell: pwsh
+        run: |
+          $errs = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error,Warning
+          $errs | Format-Table
+          if ($errs) { throw "PSScriptAnalyzer violations" }
 
       - name: Test iamlite
         shell: pwsh
@@ -31,29 +36,25 @@ jobs:
         working-directory: ./supportkit/tests
         run: Invoke-Pester -CI
 
-      - name: Package modules
+      - name: Package modules (versioned zips)
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Path dist -Force | Out-Null
-          foreach($m in 'iamlite','supportkit'){
-            $src = Join-Path $m 'src'
-            Get-ChildItem $src -Directory | ForEach-Object {
-              $name = $_.Name  # IAMLite / SupportKit
-              $out = "dist/$name.zip"
-              if (Test-Path $out) { Remove-Item $out -Force }
-              Compress-Archive -Path "$src/$name/*" -DestinationPath $out -Force
-            }
+          New-Item -ItemType Directory dist -Force | Out-Null
+          foreach($name in 'IAMLite','SupportKit'){
+            $src = "*/src/$name"
+            $zip = "dist/$name-${{ github.ref_name }}.zip"
+            if (Test-Path $zip) { Remove-Item $zip -Force }
+            Compress-Archive -Path "$src/*" -DestinationPath $zip -Force
           }
-          Get-ChildItem dist | Format-Table
+          Get-ChildItem dist
 
-      - name: Upload artifacts
+      - name: Upload artifacts (for debugging)
         uses: actions/upload-artifact@v4
         with:
-          name: ops360-modules-${{ github.ref_name }}
+          name: ops360-${{ github.ref_name }}
           path: dist/*.zip
 
-      - name: Create/Edit GitHub Release
+      - name: Attach artifacts to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.zip
-          generate_release_notes: true
