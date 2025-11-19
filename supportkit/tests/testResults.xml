@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="4" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2025-11-19" time="15:31:29">
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="4" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2025-11-19" time="15:34:56">
   <environment clr-version="4.0.30319.42000" user-domain="DESKTOP-R63HEKL" cwd="C:\Users\André\Desktop\Projetos_git\ops360\supportkit\tests" platform="Microsoft Windows 10 Pro|C:\WINDOWS|\Device\Harddisk0\Partition3" machine-name="DESKTOP-R63HEKL" nunit-version="2.5.8.0" os-version="10.0.19045" user="André" />
   <culture-info current-culture="es-ES" current-uiculture="es-ES" />
-  <test-suite type="TestFixture" name="Pester" executed="True" result="Success" success="True" time="0.4798" asserts="0" description="Pester">
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Success" success="True" time="0.4761" asserts="0" description="Pester">
     <results>
-      <test-suite type="TestFixture" name="C:\Users\André\Desktop\Projetos_git\ops360\supportkit\tests\SupportKit.Tests.ps1" executed="True" result="Success" success="True" time="0.4798" asserts="0" description="C:\Users\André\Desktop\Projetos_git\ops360\supportkit\tests\SupportKit.Tests.ps1">
+      <test-suite type="TestFixture" name="C:\Users\André\Desktop\Projetos_git\ops360\supportkit\tests\SupportKit.Tests.ps1" executed="True" result="Success" success="True" time="0.4761" asserts="0" description="C:\Users\André\Desktop\Projetos_git\ops360\supportkit\tests\SupportKit.Tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="SupportKit" executed="True" result="Success" success="True" time="0.4163" asserts="0" description="SupportKit">
+          <test-suite type="TestFixture" name="SupportKit" executed="True" result="Success" success="True" time="0.4194" asserts="0" description="SupportKit">
             <results>
-              <test-case description="exports Test-Workstation" name="SupportKit.exports Test-Workstation" time="0.0101" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="runs and returns something" name="SupportKit.runs and returns something" time="0.0982" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="can return JSON" name="SupportKit.can return JSON" time="0.0922" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="respects -MinFreePct threshold" name="SupportKit.respects -MinFreePct threshold" time="0.1724" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="exports Test-Workstation" name="SupportKit.exports Test-Workstation" time="0.0099" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="runs and returns something" name="SupportKit.runs and returns something" time="0.0914" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="can return JSON" name="SupportKit.can return JSON" time="0.0929" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="respects -MinFreePct threshold" name="SupportKit.respects -MinFreePct threshold" time="0.1764" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
         </results>

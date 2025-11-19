@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="3" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2025-11-19" time="15:31:29">
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="3" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2025-11-19" time="15:34:56">
   <environment clr-version="4.0.30319.42000" user-domain="DESKTOP-R63HEKL" cwd="C:\Users\André\Desktop\Projetos_git\ops360\iamlite\tests" platform="Microsoft Windows 10 Pro|C:\WINDOWS|\Device\Harddisk0\Partition3" machine-name="DESKTOP-R63HEKL" nunit-version="2.5.8.0" os-version="10.0.19045" user="André" />
   <culture-info current-culture="es-ES" current-uiculture="es-ES" />
-  <test-suite type="TestFixture" name="Pester" executed="True" result="Success" success="True" time="0.1422" asserts="0" description="Pester">
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Success" success="True" time="0.1272" asserts="0" description="Pester">
     <results>
-      <test-suite type="TestFixture" name="C:\Users\André\Desktop\Projetos_git\ops360\iamlite\tests\IAMLite.Tests.ps1" executed="True" result="Success" success="True" time="0.1422" asserts="0" description="C:\Users\André\Desktop\Projetos_git\ops360\iamlite\tests\IAMLite.Tests.ps1">
+      <test-suite type="TestFixture" name="C:\Users\André\Desktop\Projetos_git\ops360\iamlite\tests\IAMLite.Tests.ps1" executed="True" result="Success" success="True" time="0.1272" asserts="0" description="C:\Users\André\Desktop\Projetos_git\ops360\iamlite\tests\IAMLite.Tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="IAMLite" executed="True" result="Success" success="True" time="0.0797" asserts="0" description="IAMLite">
+          <test-suite type="TestFixture" name="IAMLite" executed="True" result="Success" success="True" time="0.0731" asserts="0" description="IAMLite">
             <results>
-              <test-case description="parses CSV and returns two users" name="IAMLite.parses CSV and returns two users" time="0.0147" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="emits valid JSON when -Json" name="IAMLite.emits valid JSON when -Json" time="0.0137" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="honors -WhatIf (ShouldProcess)" name="IAMLite.honors -WhatIf (ShouldProcess)" time="0.0107" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="parses CSV and returns two users" name="IAMLite.parses CSV and returns two users" time="0.0115" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="emits valid JSON when -Json" name="IAMLite.emits valid JSON when -Json" time="0.0082" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="honors -WhatIf (ShouldProcess)" name="IAMLite.honors -WhatIf (ShouldProcess)" time="0.0112" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
         </results>
