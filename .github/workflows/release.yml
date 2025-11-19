@@ -2,7 +2,7 @@
 
 on:
   push:
-    tags: ['v*']  # dispara quando fazes push de v0.1.1, v0.1.2, etc.
+    tags: ['v*']
   workflow_dispatch:
     inputs:
       tag:
@@ -22,8 +22,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Não precisamos de steps separados de testes,
-      # porque o build.ps1 já corre Pester + PSScriptAnalyzer
       - name: Build (tests + PSScriptAnalyzer)
         shell: pwsh
         run: ./build.ps1

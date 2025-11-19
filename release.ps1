@@ -9,7 +9,7 @@ param(
   )
 )
 
-# Garante que estamos sempre na pasta do script (root do repo)
+# Garante que estamos na pasta do script (root do repo)
 if ($PSScriptRoot) {
   Set-Location $PSScriptRoot
 }
@@ -21,7 +21,11 @@ function Get-CurrentVersion {
 }
 
 function Get-NextVersion {
-  param([version]$cur,[string]$bump,[string]$explicit)
+  param(
+    [version]$cur,
+    [string]$bump,
+    [string]$explicit
+  )
   if ($explicit) { return [version]$explicit }
   if (-not $cur) { return [version]'0.1.0' }
   switch ($bump) {
@@ -34,13 +38,27 @@ function Get-NextVersion {
   }
 }
 
-# Ler versão atual (regex) e calcular próxima
-$text0  = Get-Content $Manifests[0] -Raw
-$curVer = Get-CurrentVersion $text0
-$nextVer = Get-NextVersion -cur $curVer -bump $Bump -explicit $Version
+# 1) Tentar obter versão atual a partir da última tag v*
+$curVer = $null
+$tagList = git tag --list 'v*' | Sort-Object { [version]($_ -replace '^v','') }
+if ($tagList) {
+  $lastTag = $tagList[-1]
+  $curVer = [version]($lastTag -replace '^v','')
+} else {
+  # 2) Se não houver tags, ler do primeiro manifest
+  $text0  = Get-Content $Manifests[0] -Raw
+  $curVer = Get-CurrentVersion $text0
+}
 
+$nextVer = Get-NextVersion -cur $curVer -bump $Bump -explicit $Version
 $cv = if ($curVer) { $curVer } else { "<none>" }
 Write-Host ("Versão: {0} -> {1}" -f $cv, $nextVer) -ForegroundColor Cyan
+
+# Evitar reutilizar tags existentes
+$tag = "v$nextVer"
+if (git tag --list $tag) {
+  throw "A tag $tag já existe. Escolhe outra versão (por ex. -Version $(($nextVer.Major),$nextVer.Minor,($nextVer.Build+1) -join '.'))."
+}
 
 # Atualizar todos os manifests (só a ModuleVersion)
 $rx = [regex]"(?m)^\s*(ModuleVersion\s*=\s*'')(?:[^'']*)(''\s*$)"
@@ -53,7 +71,6 @@ foreach ($mf in $Manifests) {
   Write-Host "Atualizado ModuleVersion em $mf" -ForegroundColor Green
 }
 
-# NOVO: correr build (Pester + PSScriptAnalyzer) antes de commitar/taggar
 Write-Host ""
 Write-Host "==> Running build (tests + PSScriptAnalyzer)..." -ForegroundColor Cyan
 try {
@@ -67,8 +84,7 @@ catch {
 # Commit + tag + push
 git add -- . | Out-Null
 git commit -m ("chore(release): bump version to v{0}" -f $nextVer) | Out-Null
-$tag = "v$nextVer"
-if (-not (git tag --list $tag)) { git tag $tag }
+git tag $tag
 git push
 git push --tags
 Write-Host "Release $tag criada e enviada. 🎉" -ForegroundColor Green
