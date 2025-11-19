@@ -1,7 +1,8 @@
 ﻿name: release
+
 on:
   push:
-    tags: ['v*']
+    tags: ['v*']  # dispara quando fazes push de v0.1.1, v0.1.2, etc.
   workflow_dispatch:
     inputs:
       tag:
@@ -14,26 +15,18 @@ permissions:
 jobs:
   build-and-release:
     runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install Pester
+      # Não precisamos de steps separados de testes,
+      # porque o build.ps1 já corre Pester + PSScriptAnalyzer
+      - name: Build (tests + PSScriptAnalyzer)
         shell: pwsh
-        run: |
-          Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Install-Module Pester -Scope CurrentUser -Force -SkipPublisherCheck
-
-      - name: Test iamlite
-        shell: pwsh
-        working-directory: ./iamlite/tests
-        run: Invoke-Pester -CI
-
-      - name: Test supportkit
-        shell: pwsh
-        working-directory: ./supportkit/tests
-        run: Invoke-Pester -CI
+        run: ./build.ps1
 
       - name: Package modules
         shell: pwsh
@@ -49,9 +42,23 @@ jobs:
             }
           }
 
-      - name: Attach artifacts to GitHub Release
+      # Quando o workflow é disparado por push de tag (v0.1.2, etc)
+      - name: Attach artifacts to GitHub Release (tag push)
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.zip
           generate_release_notes: true
-          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Quando o workflow é corrido manualmente (workflow_dispatch)
+      - name: Attach artifacts to GitHub Release (manual tag)
+        if: github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          generate_release_notes: true
+          tag_name: ${{ github.event.inputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
