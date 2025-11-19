@@ -9,6 +9,11 @@ param(
   )
 )
 
+# Garante que estamos sempre na pasta do script (root do repo)
+if ($PSScriptRoot) {
+  Set-Location $PSScriptRoot
+}
+
 function Get-CurrentVersion {
   param([string]$text)
   $m = [regex]::Match($text, "(?m)^\s*ModuleVersion\s*=\s*'([^']+)'")
@@ -46,6 +51,17 @@ foreach ($mf in $Manifests) {
   $new = $rx.Replace($txt, "`$1$($nextVer.ToString())`$2")
   Set-Content -Path $mf -Value $new -Encoding UTF8
   Write-Host "Atualizado ModuleVersion em $mf" -ForegroundColor Green
+}
+
+# NOVO: correr build (Pester + PSScriptAnalyzer) antes de commitar/taggar
+Write-Host ""
+Write-Host "==> Running build (tests + PSScriptAnalyzer)..." -ForegroundColor Cyan
+try {
+  .\build.ps1
+}
+catch {
+  Write-Error "Build falhou. A release NÃO foi criada. Detalhe: $($_.Exception.Message)"
+  throw
 }
 
 # Commit + tag + push
